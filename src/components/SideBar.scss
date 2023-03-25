@@ -1,0 +1,21 @@
+.side-bar {
+  @apply w-full py-4;
+  background-color: #e6ecf3;
+  select {
+    @apply mx-2;
+    @apply block px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm;
+    width: 90%;
+  }
+  &__header {
+    @apply font-semibold text-xl pl-2 mb-2;
+  }
+  &__option-section {
+    @apply my-5;
+    ul > li {
+      @apply list-none p-4 text-lg cursor-pointer;
+      &:hover {
+        @apply bg-gray-100;
+      }
+    }
+  }
+}
