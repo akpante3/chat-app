@@ -1,6 +1,6 @@
 .side-bar {
-  @apply w-full py-4;
-  background-color: #e6ecf3;
+  @apply w-full py-4 h-full;
+  border-right: 1px solid #d3d5d9;
   select {
     @apply mx-2;
     @apply block px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm;

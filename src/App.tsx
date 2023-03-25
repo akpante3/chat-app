@@ -4,7 +4,7 @@ import ChatSection from './components/ChatSection';
 import './App.css';
 
 const App: React.FC = () => {
-return(<main className='grid grid-cols-3'>
+return(<main className='main-container'>
   <aside>
     <SideBar message={''} />
   </aside>

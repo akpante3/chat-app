@@ -1,5 +1,6 @@
 import React from "react";
 import "./SideBar.scss";
+import tw from 'tailwindcss'
 
 type AppProps = {
   message: string;
