@@ -1,6 +1,8 @@
+@import '../variable.scss';
+
 .side-bar {
-  @apply w-full py-4 h-full;
-  border-right: 1px solid #d3d5d9;
+  @apply w-full py-4 h-full pl-6;
+  border-right: 1px solid $border-color;
   select {
     @apply mx-2;
     @apply block px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none sm:text-sm;
@@ -9,13 +11,22 @@
   &__header {
     @apply font-semibold text-xl pl-2 mb-2;
   }
+  &__hamburger {
+    display: none;
+    @media (max-width: #{$phone-width}) {
+      @apply flex justify-end p-4;
+    }
+  }
   &__option-section {
     @apply my-5;
-    ul > li {
-      @apply list-none p-4 text-lg cursor-pointer;
-      &:hover {
-        @apply bg-gray-100;
-      }
+  }
+  &__channel-section {
+    @apply list-none p-4 text-lg cursor-pointer;
+    &:hover {
+      border-bottom: solid 1px $border-color;
     }
+  }
+  &__channel-active {
+    border-bottom: solid 1px $border-color;
   }
 }

@@ -1,8 +1,23 @@
+@import '../variable.scss';
+
 .text-area {
-    @apply flex items-center p-4 rounded-lg;
+    @apply py-1 px-3 w-full;
     &__input {
-        @apply flex-1 mr-4 py-2 px-4 border rounded border-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent resize-none;
-        min-height: 36px;
-        max-height: 70px;
+        @apply py-2 px-4 mb-2;
+        @apply flex-1 border rounded border-gray-400 focus:outline-none focus:ring-2 focus:border-transparent resize-none w-full;
+        min-height: 40px;
+        max-height: 100px;
+        &:focus {
+            outline-color: $brand-color;
+        }
+    }
+    &__text {
+        @apply flex;
+    }
+    &__footer {
+        @apply flex justify-between ;
+    }
+    &__footer-text-counter {
+        @apply font-bold mr-2
     }
 }
