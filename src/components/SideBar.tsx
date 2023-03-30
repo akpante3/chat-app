@@ -34,7 +34,7 @@ const SideBar = ({ activeChannel, classes, handleToggleSidebar, channels, users,
       <div className="side-bar__option-section">
         <h1 className="side-bar__header">Choose your user</h1>
         <ul>
-          {channels.map((channel: any) => <li className={`${activeChannel === channel.name ? 'side-bar__channel-active': ''} side-bar__channel-section`} onClick={() => handleChannelClick(channel.name)} key={channel.channelId} value="">{channel.name}</li>)}
+          {channels.map((channel:any) => <li className={`${activeChannel === channel.name ? 'side-bar__channel-active': ''} side-bar__channel-section`} onClick={() => handleChannelClick(channel.name)} key={channel.channelId} value="">{channel.name}</li>)}
         </ul>
       </div>
     </aside>

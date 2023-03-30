@@ -29,16 +29,16 @@ const ChatBubble: React.FC<Props> = ({
   messageId,
   userName,
 }) => {
-  const bubbleClasses = `chat-bubble ${isActiveUser ? "active" : "theirs"}`;
+  const bubbleClasses = `chat-bubble ${isActiveUser ? "active" : "not-active"}`;
   const [confirmation, setConfirmation] = useState<Confirmation>({
     type: null,
   });
   const [isDeleted, setisDeleted] = useState(false);
   const avatarClasses = `chat-bubble-avatar ${
-    isActiveUser ? "active" : "theirs"
+    isActiveUser ? "active" : "not-active"
   }`;
   let containerClasses = `chat-bubble-container ${
-    isActiveUser ? "flex-row-reverse" : "theirs"
+    isActiveUser ? "flex-row-reverse" : "not-active"
   } ${isDeleted ? "delete-animation" : ""}`;
 
   const handleConfirmation = () => {

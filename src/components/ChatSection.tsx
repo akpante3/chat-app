@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useEffect, useRef, useContext } from "react";
 import "./ChatSection.scss";
 import ChatBubble from "./ChatBubble";
 import TextArea from "./TextArea";
@@ -50,7 +50,6 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
   // fetch recent messages
   const fetchRecentMessages = () => {
     return fetchOlderMessages(false).then((data) => {
-      console.log("you return?");
       setTimeout(() => {
         scrollToBottom(chatRef);
       }, 100);
@@ -61,7 +60,7 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
     fetchOlderMessages(true).then((data) => {
       setTimeout(() => {
         scrollToTop(chatRef);
-      }, 100);
+      }, 200);
     });
   };
 
@@ -81,7 +80,7 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
   useEffect(() => {
     setTimeout(() => {
       setChatInfo({ active: false, message: "" });
-    }, 4000);
+    }, 6000);
   }, [chatInfo]);
 
 
