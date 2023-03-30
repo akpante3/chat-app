@@ -1,0 +1,30 @@
+@import '../variable.scss';
+
+.text-area {
+    @apply py-1 px-3 w-full shadow-md;
+    &__input {
+        @apply py-2 px-4;
+        @apply flex-1 rounded-l-md focus:border-transparent resize-none w-full;
+        min-height: 40px;
+        max-height: 100px;
+        &:focus {
+            outline-width: 1px;
+            outline-color: $brand-color;
+        }
+    }
+    &__text {
+        @apply flex items-center;
+    }
+    &__footer {
+        @apply flex justify-between ;
+    }
+    &__footer-text-counter {
+        @apply font-bold mr-2
+    }
+    &__button {
+        border-top-right-radius: 0.375rem !important;
+        border-bottom-right-radius: 0.375rem !important;
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+}

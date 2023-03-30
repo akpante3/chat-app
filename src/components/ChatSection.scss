@@ -1,3 +1,41 @@
+@import '../variable.scss';
+
 .chat-section {
+  @apply relative;
+  height: 100vh;
+  header {
+    @apply absolute w-full;
+    button {
+      @apply m-3
+    }
+  }
+  &__nav {
+    @apply flex p-4 font-bold items-center;
+    border-bottom: 1px solid $border-color;
+    background-color: $background-color;
+    top: 0;
+  }
+  &__nav-icon {
+    display: none;
+    @media (max-width: #{$tablet-width}) {
+      @apply flex;
+    }
+  }
+  &__chat {
+    @apply pt-14 overflow-scroll pb-28;
+    scroll-behavior: smooth;
+    height: 100vh;
     
+  }
+  &__text-area {
+    @apply absolute w-full;
+    bottom: 0;
+  }
+  &__text-area-button {
+    @apply m-3
+  }
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
+

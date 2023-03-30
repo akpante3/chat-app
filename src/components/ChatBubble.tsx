@@ -1,35 +1,98 @@
-import React from 'react';
-import './ChatBubble.scss';
+import React, { useState } from "react";
+import Icons from "./Icons";
+import "./ChatBubble.scss";
 
-type ChatBubbleProps = {
+type Props = {
   message: string;
-  isMine: boolean;
-  timestamp: Date;
+  isActiveUser: boolean;
+  timestamp: string;
   avatarUrl: string;
+  handleDelete: Function;
+  handleRetry: Function;
+  messageId: string;
+  delivered?: "pending" | "success" | "failed";
+  userName: string;
+};
+
+type Confirmation = {
+  type?: string | null,
 }
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ message, isMine, avatarUrl, timestamp }) => {
-  const containerClasses = `chat-bubble-container ${isMine ? 'active' : 'theirs'}`;
-  const bubbleClasses = `chat-bubble ${isMine ? 'active' : 'theirs'}`;
-  const avatarClasses = `chat-bubble-avatar ${isMine ? 'active' : 'theirs'}`;
+const ChatBubble: React.FC<Props> = ({
+  message,
+  isActiveUser,
+  avatarUrl,
+  timestamp,
+  delivered,
+  handleDelete,
+  handleRetry,
+  messageId,
+  userName
+}) => {
+  const bubbleClasses = `chat-bubble ${isActiveUser ? "active" : "theirs"}`;
+  const [confirmation, setConfirmation] = useState<Confirmation>({type: null});
+  const [isDeleted , setisDeleted] = useState(false)
+  const avatarClasses = `chat-bubble-avatar ${
+    isActiveUser ? "active" : "theirs"
+  }`;
+  let containerClasses = `chat-bubble-container ${
+    isActiveUser ? "flex-row-reverse" : "theirs"
+  } ${isDeleted ? 'delete-animation': ''}`;
+
+
+  const handleConfirmation = () => {
+    if (confirmation.type === 'retry') {
+        handleRetry(message, messageId)
+    } else {
+      setisDeleted(true)
+      setTimeout(() => {
+        handleDelete(messageId)
+      }, 100)
+    }
+  }
 
   return (
     <div className={containerClasses}>
-    {!isMine && (
-        <div className="chat-bubble__avatar-container">
-          <img className={avatarClasses} src={avatarUrl} alt="Avatar" />
-        </div>
-      )}
+      <div className="chat-bubble__avatar-container">
+        <img className={avatarClasses} src={avatarUrl} alt="Avatar" />
+        <span>{userName}</span>
+      </div>
       <div className={bubbleClasses}>
         <div className="chat-bubble-content">{message}</div>
       </div>
-      {isMine && (
-        <div className="chat-bubble__avatar-container">
-          <img className={avatarClasses} src={avatarUrl} alt="Avatar" />
-        </div>
+      {delivered !== "failed" && (
+        <div className="chat-bubble__time-stamp">{timestamp}</div>
       )}
+
+      <div>
+        {delivered === "pending" && <Icons name={"check-one"} />}
+        {delivered === "success" && <Icons name={"check-all"} />}
+        {delivered === "failed" && (
+          <div >
+            {confirmation.type === null ? (
+              <div className="chat-bubble__icons-failed">
+                <div onClick={() => setConfirmation({type: 'retry'})}>
+                  <Icons name={"retry"} />
+                </div>
+                <div onClick={() => setConfirmation({type: 'trash'})}>
+                  <Icons name={"trash"} />
+                </div>
+              </div>
+            ) : (
+              <div className="chat-bubble__icons-failed">
+                <div onClick={() => setConfirmation({type: null})}>
+                  <Icons name={"close"} />
+                </div>
+                <div onClick={() => handleConfirmation()}>
+                  <Icons name={"check"} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
-}
+};
 
 export default ChatBubble;

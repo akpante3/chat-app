@@ -1,0 +1,29 @@
+
+@import './variable.scss';
+
+.main-container {
+  @apply grid grid-cols-4;
+  @apply mx-auto my-0;
+  background-color: $background-color;
+  height: 100vh;
+  max-width: 1600px;
+  &__chat-section {
+    @apply col-span-3
+   }
+  @media (max-width: #{$tablet-width}) {
+    @apply grid-cols-1;
+    &__side-bar {
+      position: absolute;
+      background-color: $background-color;
+      z-index: 20;
+      &--open {
+        transform: translateX(0);
+        transition: transform 0.3s ease-in-out;
+      }
+      &--closed {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+      }
+    }
+  }
+}
