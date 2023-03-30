@@ -16,6 +16,10 @@ interface ContextType {
   setpendingMessages: Function,
   disableTextArea: boolean,
   setDisableTextArea: Function,
+  isAtTopOfPage: boolean,
+  setIsAtTopOfPage: Function,
+  textAreaValue: string, 
+  setTextAreaValue: Function
 }
 
 interface Message {
@@ -45,6 +49,10 @@ const Context = createContext<ContextType>({
   setpendingMessages: () => {},
   disableTextArea: false,
   setDisableTextArea: () => {},
+  isAtTopOfPage: false,
+  setIsAtTopOfPage: () => {},
+  textAreaValue: "", 
+  setTextAreaValue: () => {}
 });
 
 const Provider: React.FC<ProviderProps> = ({ children }) => {
@@ -53,6 +61,8 @@ const Provider: React.FC<ProviderProps> = ({ children }) => {
   const [activeUser, setActiveUser] = useState("Sam");
   const [pendingMessages, setpendingMessages] = useState<Message[]>([])
   const [disableTextArea, setDisableTextArea] = useState(false);
+  const [isAtTopOfPage, setIsAtTopOfPage] = useState(false);
+  const [textAreaValue, setTextAreaValue] = useState<string>("");
   const channels = [
     {
       channelId: "1",
@@ -82,6 +92,10 @@ const Provider: React.FC<ProviderProps> = ({ children }) => {
     disableTextArea,
     setDisableTextArea,
     channels,
+    isAtTopOfPage,
+    setIsAtTopOfPage,
+    textAreaValue, 
+    setTextAreaValue
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;

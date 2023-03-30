@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState, RefObject, useContext, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import { POST_MESSAGE, GET_LATEST_MESSAGES } from "../graphql/query";
+import { RefObject, useContext, useEffect } from "react";
 import { Context } from "../context/index";
-
+import useLatestMessages from "./useLatestMessage";
+import usePostNewMessage from "./usePostNewMessage";
+import useFetchMore from "./useFetchMore";
 interface Message {
   channelId: string;
   text: string;
@@ -14,103 +14,32 @@ interface Message {
   postMessage?: Object;
 }
 
+interface Result {
+  handlePageScroll: (ref: RefObject<HTMLDivElement>) => void ,
+  postMessage: (message: Message, pendingId: string) => void,
+  refetchLatestMessage: () => Promise<any>,
+  deletePendingMessage: (messageId: string) => Promise<boolean>,
+  fetchOlderMessages: () => Promise<boolean>,
+}
 
-export const useChat = (): [
-  boolean,
-  (ref: RefObject<HTMLDivElement>) => void,
-  (message: Message, pendingId: string) => void,
-  (id: string) => any[],
-  (variables?: Partial<{ channelId: string; }> | undefined) => Promise<any>,
-  (messageId: string) => Promise<boolean>
-] => {
-  const [isAtTop, setIsAtTop] = useState(false);
-  const {
-    pendingMessages,
-    setpendingMessages,
-    setMessages,
-    activeChannel,
-    activeUser,
-    setDisableTextArea,
-  } = useContext(Context);
-
-  const updatePendingMessages = () => {
-    let getPendingMessages = localStorage.getItem(
-      `${activeChannel}-${activeUser}-pending`
-    );
-
-
-    if (
-      typeof getPendingMessages === "string" &&
-      JSON.parse(getPendingMessages).length
-    ) {
-      setpendingMessages([...JSON.parse(getPendingMessages)])
-    } else {
-      setpendingMessages([])
-    }
-  }
-
-  const deletePendingMessage = async (messageId: string) => {
-    const getPendingMessages = localStorage.getItem(
-      `${activeChannel}-${activeUser}-pending`
-    );
-
-    const pendingMessages = getPendingMessages
-      ? JSON.parse(getPendingMessages).filter((item: any) => {
-          return item.messageId !== messageId;
-        })
-      : [];
-
-
-      localStorage.setItem(
-        `${activeChannel}-${activeUser}-pending`,
-        JSON.stringify(pendingMessages)
-      );
-
-    return refetchLatestMessage()
-      .then((data) => {
-        setpendingMessages(pendingMessages);
-        return true;
-      })
-  };
-
-  const { data, loading, error, refetch: refetchLatestMessage } = useQuery(GET_LATEST_MESSAGES, {
-    variables: { channelId: activeChannel },
-    fetchPolicy: "network-only",
-    onCompleted: (data) => {
-      if (data) {
-        let result = data.fetchLatestMessages;
-
-        result = result.map((message: Message) => ({
-          ...message,
-          delivered: "success",
-        }));
-
-        updatePendingMessages()
-
-        setMessages(result);
-
-      }
-    },
-  });
-
+export const useChat = (): Result => {
   
-  useEffect(() => {
-    console.log('you dey change self')
-    updatePendingMessages()
-  },[activeUser, activeUser, activeChannel])
-  
+  const { activeChannel, setIsAtTopOfPage } = useContext(Context);
 
-  const [createMessage] = useMutation(POST_MESSAGE, {
-    onCompleted: (payload) => {
-      return payload;
-    },
-  });
+  const { refetchLatestMessage } = useLatestMessages(activeChannel);
+
+  const { deletePendingMessage, postMessage } =
+    usePostNewMessage(activeChannel);
+  const { fetchOlderMessages } = useFetchMore(activeChannel);
+
 
   const handlePageScroll = (ref: RefObject<HTMLDivElement>): void => {
     const handleScroll = (): void => {
       const div = ref.current;
       if (div) {
-        setIsAtTop(div.scrollTop === 0);
+        const scrollTop = div.scrollTop;
+        const scrollHeight = div.scrollHeight;
+        setIsAtTopOfPage(scrollTop <= scrollHeight * 0.3 && scrollTop >= 0);
       }
     };
 
@@ -120,48 +49,12 @@ export const useChat = (): [
     }
   };
 
-  const postMessage = (message: Message, pendingId: string) => {
-    setDisableTextArea(true)
 
-    createMessage({
-      variables: message,
-    })
-      .then((response) => {
-        console.log(response.data);
-
-          const removeFromPendingList = pendingMessages.filter(
-            (item: any) => item.messageId !== pendingId
-          );
-
-          console.log({message, pendingId, removeFromPendingList: removeFromPendingList, pendingMessages})
-          refetchLatestMessage().then((data) => {
-            setpendingMessages(removeFromPendingList);
-            deletePendingMessage(pendingId)
-            setDisableTextArea(false);
-          });
-          console.log({message, pendingId, removeFromPendingList: removeFromPendingList})
-      })
-      .catch((error: any) => {
-        
-        const updatedMessages = pendingMessages
-          .filter((item: any) => item.messageId !== pendingId)
-          .concat({ ...message, delivered: "failed", messageId: pendingId });
-
-        setpendingMessages(updatedMessages);
-
-        localStorage.setItem(
-          `${activeChannel}-${activeUser}-pending`,
-          JSON.stringify(updatedMessages)
-        );
-        setDisableTextArea(false);
-      });
-
-      
+  return {
+    handlePageScroll,
+    postMessage,
+    refetchLatestMessage,
+    deletePendingMessage,
+    fetchOlderMessages,
   };
-
-  const fetchMessages = (id: string) => {
-    return [data, loading, error];
-  };
-
-  return [isAtTop, handlePageScroll, postMessage, fetchMessages, refetchLatestMessage, deletePendingMessage];
 };

@@ -13,7 +13,7 @@
   }
   &__hamburger {
     display: none;
-    @media (max-width: #{$phone-width}) {
+    @media (max-width: #{$tablet-width}) {
       @apply flex justify-end p-4;
     }
   }

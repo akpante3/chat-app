@@ -5,11 +5,12 @@ import ChatBubble from "./ChatBubble";
 import TextArea from "./TextArea";
 import Button from "./Button";
 import { useChat } from "../hooks/index";
+import useLatestMessages from "../hooks/useLatestMessage";
 import Icons from "./Icons";
 import { Context } from "../context/index";
 
 type Props = {
-  headerText: string,
+  headerText: string;
   handleToggleSidebar: Function;
 };
 
@@ -28,22 +29,24 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
     pendingMessages,
     setpendingMessages,
     messages,
-    setMessages,
+    isAtTopOfPage,
     activeChannel,
     activeUser,
     channels,
     disableTextArea,
+    textAreaValue,
+    setTextAreaValue,
   } = useContext(Context);
   const chatRef = useRef<HTMLDivElement>(null);
-  const [
-    isAtTop,
+  const {
     handlePageScroll,
     postMessage,
-    fetchMessages,
     refetchLatestMessage,
     deletePendingMessage,
-  ] = useChat();
-  const [data, loading, error] = fetchMessages(activeChannel);
+    fetchOlderMessages,
+  } = useChat();
+  const { lastestMessageData } = useLatestMessages(activeChannel);
+  const [tester, setTester] = useState<any>([]);
 
   const formatTime = (timestamp: string) => {
     const dateObj = new Date(timestamp);
@@ -58,18 +61,15 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
   };
 
   const scrollToBottom = () => {
-    if (chatRef && chatRef.current) {
-      chatRef.current.scrollTop = chatRef.current.scrollHeight;
-    }
+    return refetchLatestMessage().then(() => {
+      if (chatRef && chatRef.current) {
+        chatRef.current.scrollTop = chatRef.current.scrollHeight;
+      }
+    });
   };
 
-  const scrollToTop = () => {
-    if (chatRef && chatRef.current) {
-      chatRef.current.scrollTop = 0;
-    }
-  };
   // sort chat
-  const sortChat = (data:Message[] | Object[]) => {
+  const sortChat = (data: Message[] | Object[]) => {
     return [...data].sort((a: any, b: any) => {
       if (a.datetime && b.datetime) {
         return new Date(a.datetime).getTime() - new Date(b.datetime).getTime();
@@ -79,24 +79,30 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
     });
   };
 
+  const scrollToTop = () => {
+    fetchOlderMessages().then((data) => {
+      console.log("we came back", data);
+      if (chatRef && chatRef.current) {
+        chatRef.current.scrollTop = 0;
+      }
+    });
+  };
+
   // handleMessageRetry: retry failed messages
   const handleMessageRetry = (message: string, messageId: string) => {
-      handleSubmit(message, messageId);
+    handleSubmit(message, messageId);
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [data, pendingMessages]);
+  }, [lastestMessageData, pendingMessages]);
 
   useEffect(() => {
     handlePageScroll(chatRef);
   }, []);
 
-
-
   const handleSubmit = (text: string, pendingId?: string) => {
     const date = new Date();
-
 
     const getChannelId = channels.find(
       (channel) => channel.name === activeChannel
@@ -104,7 +110,8 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
 
     const data = {
       channelId: getChannelId?.channelId,
-      messageId: pendingId || `${Math.floor(Math.random() * 1000000000000) + 1}`,
+      messageId:
+        pendingId || `${Math.floor(Math.random() * 1000000000000) + 1}`,
       text,
       datetime: date.toISOString(),
       userId: activeUser,
@@ -117,13 +124,12 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
         text,
         userId: activeUser,
       },
-      data.messageId 
+      data.messageId
     );
 
-    if(!pendingId) {
+    if (!pendingId) {
       setpendingMessages((PrevState: any) => [...PrevState, data]);
     }
-    
   };
 
   return (
@@ -139,38 +145,42 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
 
           <div className="ml-2">{headerText}</div>
         </div>
-        {/* {!isAtTop && (
+        {isAtTopOfPage && (
           <Button
             text={"Read More"}
             icon={"arrow-up"}
             handleClick={() => scrollToTop()}
+            isDisabled={disableTextArea}
           />
-        )} */}
+        )}
       </header>
       <div className="chat-section__chat" ref={chatRef}>
         {messages &&
-          [...sortChat(messages), ...sortChat(pendingMessages)].map((message: any, index: number) => (
-            <ChatBubble
-              key={message.messageId}
-              messageId={message.messageId}
-              message={message.text}
-              isActiveUser={message.userId === activeUser}
-              timestamp={formatTime(message.datetime)}
-              delivered={message?.delivered}
-              avatarUrl={
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyu_6qtbLHBt4nJH-r7H5zjugtH0cwK7uMlw&usqp=CAU"
-              }
-              handleDelete={(messageId: string) =>
-                deletePendingMessage(messageId)
-              }
-              handleRetry={(message: string, messageId:string) =>
-                handleMessageRetry(message, messageId)
-              }
-            />
-          ))}
+          [...sortChat(messages), ...sortChat(pendingMessages)].map(
+            (message: any, index: number) => (
+              <ChatBubble
+                key={message.messageId}
+                messageId={message.messageId}
+                message={message.text}
+                isActiveUser={message.userId === activeUser}
+                userName={message.userId}
+                timestamp={formatTime(message.datetime)}
+                delivered={message?.delivered}
+                avatarUrl={
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyu_6qtbLHBt4nJH-r7H5zjugtH0cwK7uMlw&usqp=CAU"
+                }
+                handleDelete={(messageId: any) =>
+                  deletePendingMessage(messageId)
+                }
+                handleRetry={(message: string, messageId: string) =>
+                  handleMessageRetry(message, messageId)
+                }
+              />
+            )
+          )}
       </div>
       <div className="chat-section__text-area">
-        {isAtTop && (
+        {!isAtTopOfPage && (
           <div className="chat-section__text-area-button">
             <Button
               text={"Read More"}
@@ -183,6 +193,8 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
         <TextArea
           isDisabled={disableTextArea}
           handleMessageSubmit={(text: string) => handleSubmit(text)}
+          inputValue={textAreaValue}
+          setInputValue={setTextAreaValue}
         />
       </div>
     </div>

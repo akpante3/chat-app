@@ -22,3 +22,14 @@ export const POST_MESSAGE = gql`
     }
   }
 `;
+
+export const FETCH_MORE_QUERY = gql`
+  query fetchMoreMessages($channelId: String!, $messageId: String!, $old: Boolean!) {
+    fetchMoreMessages(channelId: $channelId, messageId: $messageId, old: $old) {
+      messageId
+      text
+      datetime
+      userId
+    }
+  }
+`;

@@ -10,7 +10,7 @@
   &__chat-section {
     @apply col-span-3
    }
-  @media (max-width: #{$phone-width}) {
+  @media (max-width: #{$tablet-width}) {
     @apply grid-cols-1;
     &__side-bar {
       position: absolute;

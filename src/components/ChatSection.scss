@@ -16,8 +16,8 @@
     top: 0;
   }
   &__nav-icon {
-
-    @media (max-width: #{$phone-width}) {
+    display: none;
+    @media (max-width: #{$tablet-width}) {
       @apply flex;
     }
   }

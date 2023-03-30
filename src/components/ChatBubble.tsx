@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Button from "./Button";
 import Icons from "./Icons";
 import "./ChatBubble.scss";
 
@@ -12,6 +11,7 @@ type Props = {
   handleRetry: Function;
   messageId: string;
   delivered?: "pending" | "success" | "failed";
+  userName: string;
 };
 
 type Confirmation = {
@@ -27,6 +27,7 @@ const ChatBubble: React.FC<Props> = ({
   handleDelete,
   handleRetry,
   messageId,
+  userName
 }) => {
   const bubbleClasses = `chat-bubble ${isActiveUser ? "active" : "theirs"}`;
   const [confirmation, setConfirmation] = useState<Confirmation>({type: null});
@@ -46,7 +47,7 @@ const ChatBubble: React.FC<Props> = ({
       setisDeleted(true)
       setTimeout(() => {
         handleDelete(messageId)
-      }, 300)
+      }, 100)
     }
   }
 
@@ -54,6 +55,7 @@ const ChatBubble: React.FC<Props> = ({
     <div className={containerClasses}>
       <div className="chat-bubble__avatar-container">
         <img className={avatarClasses} src={avatarUrl} alt="Avatar" />
+        <span>{userName}</span>
       </div>
       <div className={bubbleClasses}>
         <div className="chat-bubble-content">{message}</div>

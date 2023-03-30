@@ -5,4 +5,5 @@
     @apply font-semibold px-4 py-2;
     @apply rounded text-white focus:outline-none focus:ring-2 focus:ring-opacity-50;
     background-color: $brand-color;
+    min-height: 40px;
 }
