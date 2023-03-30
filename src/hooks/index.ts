@@ -19,7 +19,7 @@ interface Result {
   postMessage: (message: Message, pendingId: string) => void,
   refetchLatestMessage: () => Promise<any>,
   deletePendingMessage: (messageId: string) => Promise<boolean>,
-  fetchOlderMessages: () => Promise<boolean>,
+  fetchOlderMessages: (isOld: boolean) => Promise<any>
 }
 
 export const useChat = (): Result => {
@@ -48,6 +48,7 @@ export const useChat = (): Result => {
       div.addEventListener("scroll", handleScroll);
     }
   };
+
 
 
   return {

@@ -22,7 +22,7 @@
     }
   }
   &__chat {
-    @apply pt-14 overflow-scroll pb-28;
+    @apply pt-28 overflow-scroll pb-28;
     scroll-behavior: smooth;
     height: 100vh;
     
@@ -33,6 +33,10 @@
   }
   &__text-area-button {
     @apply m-3
+  }
+  &__info-box {
+    @apply absolute w-full;
+    top: 10%;
   }
   ::-webkit-scrollbar {
     display: none;
