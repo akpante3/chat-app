@@ -15,8 +15,8 @@ type Props = {
 };
 
 type Confirmation = {
-  type?: string | null,
-}
+  type?: string | null;
+};
 
 const ChatBubble: React.FC<Props> = ({
   message,
@@ -27,29 +27,30 @@ const ChatBubble: React.FC<Props> = ({
   handleDelete,
   handleRetry,
   messageId,
-  userName
+  userName,
 }) => {
   const bubbleClasses = `chat-bubble ${isActiveUser ? "active" : "theirs"}`;
-  const [confirmation, setConfirmation] = useState<Confirmation>({type: null});
-  const [isDeleted , setisDeleted] = useState(false)
+  const [confirmation, setConfirmation] = useState<Confirmation>({
+    type: null,
+  });
+  const [isDeleted, setisDeleted] = useState(false);
   const avatarClasses = `chat-bubble-avatar ${
     isActiveUser ? "active" : "theirs"
   }`;
   let containerClasses = `chat-bubble-container ${
     isActiveUser ? "flex-row-reverse" : "theirs"
-  } ${isDeleted ? 'delete-animation': ''}`;
-
+  } ${isDeleted ? "delete-animation" : ""}`;
 
   const handleConfirmation = () => {
-    if (confirmation.type === 'retry') {
-        handleRetry(message, messageId)
+    if (confirmation.type === "retry") {
+      handleRetry(message, messageId);
     } else {
-      setisDeleted(true)
+      setisDeleted(true);
       setTimeout(() => {
-        handleDelete(messageId)
-      }, 100)
+        handleDelete(messageId);
+      }, 100);
     }
-  }
+  };
 
   return (
     <div className={containerClasses}>
@@ -63,34 +64,35 @@ const ChatBubble: React.FC<Props> = ({
       {delivered !== "failed" && (
         <div className="chat-bubble__time-stamp">{timestamp}</div>
       )}
-
-      <div>
-        {delivered === "pending" && <Icons name={"check-one"} />}
-        {delivered === "success" && <Icons name={"check-all"} />}
-        {delivered === "failed" && (
-          <div >
-            {confirmation.type === null ? (
-              <div className="chat-bubble__icons-failed">
-                <div onClick={() => setConfirmation({type: 'retry'})}>
-                  <Icons name={"retry"} />
+      {isActiveUser && (
+        <div>
+          {delivered === "pending" && <Icons name={"check-one"} />}
+          {delivered === "success" && <Icons name={"check-all"} />}
+          {delivered === "failed" && (
+            <div>
+              {confirmation.type === null ? (
+                <div className="chat-bubble__icons-failed">
+                  <div onClick={() => setConfirmation({ type: "retry" })}>
+                    <Icons name={"retry"} />
+                  </div>
+                  <div onClick={() => setConfirmation({ type: "trash" })}>
+                    <Icons name={"trash"} />
+                  </div>
                 </div>
-                <div onClick={() => setConfirmation({type: 'trash'})}>
-                  <Icons name={"trash"} />
+              ) : (
+                <div className="chat-bubble__icons-failed">
+                  <div onClick={() => setConfirmation({ type: null })}>
+                    <Icons name={"close"} />
+                  </div>
+                  <div onClick={() => handleConfirmation()}>
+                    <Icons name={"check"} />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="chat-bubble__icons-failed">
-                <div onClick={() => setConfirmation({type: null})}>
-                  <Icons name={"close"} />
-                </div>
-                <div onClick={() => handleConfirmation()}>
-                  <Icons name={"check"} />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

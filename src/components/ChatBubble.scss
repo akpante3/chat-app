@@ -24,13 +24,14 @@
   }
 
   &.active {
-    background-color: #007aff;
+    background-color: $brand-color;
+    border: 1px solid $border-color;
     color: white;
     border-radius: 16px 16px 0px 16px;
   }
 
   &.theirs {
-    border: 1px solid #d8d8d8;
+    border: 1px solid $border-color;
     border-radius: 16px 16px 16px 0px;
   }
   &__time-stamp {
@@ -51,12 +52,12 @@
     @apply m-4 flex flex-col justify-center;
     img {
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 40px;
       object-fit: cover;
     }
     span {
-      @apply text-sm text-center;
+      @apply text-sm text-center font-semibold;
     }
   }
 }

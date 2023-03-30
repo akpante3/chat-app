@@ -11,7 +11,7 @@ type AppProps = {
   }[],
   users:string[],
   handleUserChange: (event: React.ChangeEvent<HTMLSelectElement>) => any,
-  handleChannelClick: (channel: object) => {},
+  handleChannelClick: (channel: object) => void,
   activeChannel: string
 };
 

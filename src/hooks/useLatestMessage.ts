@@ -27,6 +27,7 @@ const useLatestMessages = (activeChannel: string): Result => {
     activeUser,
     textAreaValue,
     setTextAreaValue,
+    setChatInfo
   } = useContext(Context);
 
   const updatePendingMessages = () => {
@@ -49,9 +50,7 @@ const useLatestMessages = (activeChannel: string): Result => {
       `${activeChannel}-${activeUser}-text-area`
     );
     if (getTextAreaValue) setTextAreaValue(getTextAreaValue);
-    
   };
-
 
   useEffect(() => {
     localStorage.setItem(
@@ -62,7 +61,7 @@ const useLatestMessages = (activeChannel: string): Result => {
 
   useEffect(() => {
     updatePendingMessages();
-    updateTextArea()
+    updateTextArea();
   }, [activeUser, activeChannel]);
 
   const {
@@ -76,6 +75,9 @@ const useLatestMessages = (activeChannel: string): Result => {
     onCompleted: (data) => {
       if (data) {
         let result = data.fetchLatestMessages;
+        if (!result.length) {
+          setChatInfo({ active: true, message: "No new messages in this channel" });
+        }
 
         result = result.map((message: Message) => ({
           ...message,
@@ -88,6 +90,10 @@ const useLatestMessages = (activeChannel: string): Result => {
       }
     },
   });
+
+  if (error) {
+    setChatInfo({ active: true, message: "Error: could not fetch messages" });
+  }
 
   return { lastestMessageData, loading, refetchLatestMessage };
 };

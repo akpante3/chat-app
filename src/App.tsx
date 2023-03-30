@@ -6,9 +6,18 @@ import "./App.scss";
 
 const App: React.FC = () => {
   const [showSidebar, setShowSidebar] = useState<boolean>(false);
- const {setActiveUser, activeChannel, activeUser, channels, setActiveChannel, users} = useContext(Context);
+ const {setActiveUser, activeChannel, activeUser, channels, setActiveChannel, users, setChatInfo} = useContext(Context);
 
 
+ const userChange = (value: any) => {
+  setChatInfo({ active: true, message: 'loading...'})
+  setActiveUser(value)
+ }
+
+ const channelChange  = (value:object) => {
+  setChatInfo({ active: true, message: 'loading...'})
+  setActiveChannel(value)
+ }
   return (
       <main className="main-container">
         <div>
@@ -19,8 +28,8 @@ const App: React.FC = () => {
             activeChannel={activeChannel}
             channels={channels}
             users={users}
-            handleUserChange={(value:any) => setActiveUser(value)}
-            handleChannelClick= {(value) => setActiveChannel(value)}
+            handleUserChange={(value:any) => userChange(value)}
+            handleChannelClick= {(channel: object) => channelChange(channel)}
             classes={[
               "main-container__side-bar",
               showSidebar

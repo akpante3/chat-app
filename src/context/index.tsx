@@ -4,22 +4,24 @@ interface ContextType {
   messages: Message[];
   setMessages: Function;
   channels: {
-    name: string,
-    channelId: string
+    name: string;
+    channelId: string;
   }[];
   users: string[];
   activeChannel: string;
   setActiveChannel: Function;
   activeUser: string;
   setActiveUser: Function;
-  pendingMessages: Object[],
-  setpendingMessages: Function,
-  disableTextArea: boolean,
-  setDisableTextArea: Function,
-  isAtTopOfPage: boolean,
-  setIsAtTopOfPage: Function,
-  textAreaValue: string, 
-  setTextAreaValue: Function
+  pendingMessages: Object[];
+  setpendingMessages: Function;
+  disableTextArea: boolean;
+  setDisableTextArea: Function;
+  isAtTopOfPage: boolean;
+  setIsAtTopOfPage: Function;
+  textAreaValue: string;
+  setTextAreaValue: Function;
+  chatInfo: { active: boolean, message: string };
+  setChatInfo: Function;
 }
 
 interface Message {
@@ -28,8 +30,8 @@ interface Message {
   userId: string;
   messageId?: number;
   datetime?: string | Date;
-  delivered?: 'pending' | 'success' | 'failed';
-  postMessage?: Object
+  delivered?: "pending" | "success" | "failed";
+  postMessage?: Object;
 }
 
 interface ProviderProps {
@@ -51,18 +53,21 @@ const Context = createContext<ContextType>({
   setDisableTextArea: () => {},
   isAtTopOfPage: false,
   setIsAtTopOfPage: () => {},
-  textAreaValue: "", 
-  setTextAreaValue: () => {}
+  textAreaValue: "",
+  setTextAreaValue: () => {},
+  chatInfo: { active: false, message: '' },
+  setChatInfo: () => {},
 });
 
 const Provider: React.FC<ProviderProps> = ({ children }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [activeChannel, setActiveChannel] = useState("General");
   const [activeUser, setActiveUser] = useState("Sam");
-  const [pendingMessages, setpendingMessages] = useState<Message[]>([])
+  const [pendingMessages, setpendingMessages] = useState<Message[]>([]);
   const [disableTextArea, setDisableTextArea] = useState(false);
   const [isAtTopOfPage, setIsAtTopOfPage] = useState(false);
   const [textAreaValue, setTextAreaValue] = useState<string>("");
+  const [chatInfo, setChatInfo] = useState({ active: false, message: '' });
   const channels = [
     {
       channelId: "1",
@@ -76,8 +81,8 @@ const Provider: React.FC<ProviderProps> = ({ children }) => {
       channelId: "3",
       name: "LGTM",
     },
-  ]
-  const users = ["Sam", "Russell", "Joyse"]
+  ];
+  const users = ["Sam", "Russell", "Joyse"];
 
   const contextValue = {
     messages,
@@ -94,8 +99,10 @@ const Provider: React.FC<ProviderProps> = ({ children }) => {
     channels,
     isAtTopOfPage,
     setIsAtTopOfPage,
-    textAreaValue, 
-    setTextAreaValue
+    textAreaValue,
+    setTextAreaValue,
+    chatInfo,
+    setChatInfo,
   };
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>;
