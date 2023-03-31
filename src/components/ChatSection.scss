@@ -6,7 +6,7 @@
   header {
     @apply absolute w-full;
     button {
-      @apply m-3
+      @apply m-3;
     }
   }
   &__nav {
@@ -35,8 +35,10 @@
     @apply m-3
   }
   &__info-box {
-    @apply absolute w-full;
+    @apply absolute;
+    min-width: 300px;
     top: 10%;
+    left: 40%;
   }
   ::-webkit-scrollbar {
     display: none;

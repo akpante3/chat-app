@@ -39,7 +39,7 @@ export const useChat = (): Result => {
       if (div) {
         const scrollTop = div.scrollTop;
         const scrollHeight = div.scrollHeight;
-        setIsAtTopOfPage(scrollTop <= scrollHeight * 0.3 && scrollTop >= 0);
+        setIsAtTopOfPage(scrollTop <= scrollHeight * 0.3 && scrollTop === 0);
       }
     };
 

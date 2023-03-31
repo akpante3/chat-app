@@ -129,14 +129,14 @@ const ChatSection = ({ headerText, handleToggleSidebar }: Props) => {
 
           <div className="ml-2">{headerText}</div>
         </div>
-        {isAtTopOfPage && (
+        {/* {isAtTopOfPage && ( */}
           <Button
             text={"Read More"}
             icon={"arrow-up"}
             handleClick={() => fetchOldMessages()}
             isDisabled={disableTextArea}
           />
-        )}
+        {/* )} */}
       </header>
       <div className="chat-section__info-box">
         <InfoBox active={chatInfo.active} message={chatInfo.message} />
