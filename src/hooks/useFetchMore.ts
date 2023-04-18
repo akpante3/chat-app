@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Context } from "../context/index";
 import { FETCH_MORE_QUERY } from "../graphql/query";
@@ -8,6 +8,8 @@ interface Result {
 }
 const usePostNewMessage = (activeChannel: string): Result => {
   const { setMessages, messages, setChatInfo } = useContext(Context);
+  const [moreMessages, setMoreMessages] = useState([])
+
 
   const {
     loading: fetchMoreloading,
@@ -41,25 +43,34 @@ const usePostNewMessage = (activeChannel: string): Result => {
         let result = data?.data.fetchMoreMessages;
         let infoText = isOld ? 'Could not fetch previous messages' : 'No recent messages'
 
+        console.log(result)
 
         if (result.length === 0) {
           setChatInfo({ active: true, message: infoText });
           return [];
         }
 
+        // if (result.length === moreMessages.length) {
+        //   return []
+        // }
+
         result = result.map((msg: any) => {
           msg.messageId = `${msg.messageId}${
             Math.floor(Math.random() * 1000000000000) + 1
           }`;
 
+          msg.delivered = 'success'
+
           return msg;
         });
-
+        console.log(result, 'this is result', moreMessages)
+        setMoreMessages(result)
         setMessages((prevState: any) => [...result, ...prevState]);
 
         return result;
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e)
         setChatInfo({ active: true, message: "Error, Could not fetch messages" });
       });
   };
